@@ -6,9 +6,17 @@
  * Time: 下午4:33
  */
 
-class BaseController
+namespace app\controllers;
+use service\Controller;
+
+class BaseController extends Controller
 {
+
     public function __construct()
     {
+
     }
+
+
+
 }

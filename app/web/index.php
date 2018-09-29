@@ -6,19 +6,12 @@
  * Time: 下午4:37
  */
 
-use Illuminate\Database\Capsule\Manager as Capsule;
+// 定义 BASE_PATH
+define('APP_PATH', __DIR__);
 
+// 启动器
+require APP_PATH.'/../../bootstrap.php';
 
-// Autoload 自动载入
-require __DIR__.'/../../vendor/autoload.php';
-
-// Eloquent ORM
-$capsule = new Capsule;
-
-$capsule->addConnection(require '../config/database.php');
-
-$capsule->bootEloquent();
-
-// 路由配置
-require __DIR__.'/../config/routes.php';
+// 路由配置、开始处理
+require APP_PATH.'/../config/routes.php';
 
