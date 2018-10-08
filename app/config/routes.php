@@ -7,7 +7,10 @@
  */
 
 use NoahBuscher\Macaw\Macaw;
+Macaw::get('/home/index','app\controllers\HomeController@home');
 Macaw::get('', 'app\controllers\HomeController@home');
+//Macaw::get('/home/index','');
+//Macaw::map('',[]);
 
 Macaw::$error_callback = function() {
 

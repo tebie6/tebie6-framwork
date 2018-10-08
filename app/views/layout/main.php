@@ -1,0 +1,7 @@
+
+
+header
+
+<?= $content?>
+
+footer

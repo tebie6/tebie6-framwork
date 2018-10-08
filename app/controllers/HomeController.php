@@ -18,18 +18,16 @@ class HomeController extends BaseController
         $data = [
             'article'   =>  BlogArticle::first(['title'])
         ];
-        return $this->render('home',$data);
-//        $this->view = View::make('home')->with('article',BlogArticle::first(['title']))
-//
-//            ->withTitle('MFFC :-D')
-//
-//            ->withFuckMe('OK!');
 
-//        echo "<h1>控制器成功！</h1>";die;
-//
-//        $article = BlogArticle::first()->toArray();
-//        echo "<pre>";
-//        print_r($article);die;
-//        require dirname(__FILE__).'/../views/home.php';
+        return $this->render('home',$data);
+    }
+
+    public function index(){
+
+        $data = [
+            'article'   =>  BlogArticle::first(['title'])
+        ];
+        return [];
+//        return $this->render('home',$data);
     }
 }

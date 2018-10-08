@@ -11,7 +11,7 @@ class Fuck
 
     public static $classMap = [];
 
-    
+
     /**
      * 自动加载类库
      * @param $className

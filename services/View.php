@@ -28,14 +28,14 @@ class View
     public static function make($viewName = null)
     {
         if ( ! $viewName ) {
-            throw new InvalidArgumentException("视图名称不能为空！");
+            throw new \InvalidArgumentException("视图名称不能为空！");
         } else {
 
             $viewFilePath = self::getFilePath($viewName);
             if ( is_file($viewFilePath) ) {
                 return new View($viewFilePath);
             } else {
-                throw new UnexpectedValueException("视图文件不存在！");
+                throw new \UnexpectedValueException($viewFilePath." 视图文件不存在！");
             }
         }
     }
@@ -78,6 +78,100 @@ class View
     }
 
     /**
+     * Renders a view file as a PHP script.  引用Yii2
+     *
+     * This method treats the view file as a PHP script and includes the file.
+     * It extracts the given parameters and makes them available in the view file.
+     * The method captures the output of the included view file and returns it as a string.
+     *
+     * This method should mainly be called by view renderer or [[renderFile()]].
+     *
+     * @param string $_file_ the view file.
+     * @param array $_params_ the parameters (name-value pairs) that will be extracted and made available in the view file.
+     * @return string the rendering result
+     * @throws \Exception
+     * @throws \Throwable
+     */
+    private static function renderPhpFile($_file_, $_params_ = [])
+    {
+        $_obInitialLevel_ = ob_get_level();
+        ob_start();
+        ob_implicit_flush(false);
+        extract($_params_, EXTR_OVERWRITE);
+        try {
+            require $_file_;
+            return ob_get_clean();
+        } catch (\Exception $e) {
+            while (ob_get_level() > $_obInitialLevel_) {
+                if (!@ob_end_clean()) {
+                    ob_clean();
+                }
+            }
+            throw $e;
+        } catch (\Throwable $e) {
+            while (ob_get_level() > $_obInitialLevel_) {
+                if (!@ob_end_clean()) {
+                    ob_clean();
+                }
+            }
+            throw $e;
+        }
+    }
+
+    /**
+     * 渲染视图 【渲染布局】
+     * @param $viewName
+     * @param array $data
+     * @return mixed
+     */
+    public static function render($viewName, $data = []){
+
+        // 渲染模版
+        $content = View::make($viewName)->setData($data);
+        $output = View::renderPhpFile($content->view, $content->data);
+
+        // 渲染layout
+        $content = View::make('layout/main')->setData(['content'=>$output]);
+        return View::renderPhpFile($content->view, $content->data);
+
+    }
+
+    /**
+     * 渲染视图 【不渲染布局】
+     * @param $viewName
+     * @param array $data
+     * @return mixed
+     */
+    public static function renderPartial($viewName, $data = []){
+
+        // 渲染模版
+        $content = View::make($viewName)->setData($data);
+        return View::renderPhpFile($content->view, $content->data);
+    }
+
+    /**
+     * 引入View 文件 未使用 仅做学习参考
+     * 备注：同 renderPhpFile() 方法类似
+     * @return mixed
+     */
+    public function requireView(){
+        $view = $this->view;
+
+        // instanceof 作用：（1）判断一个对象是否是某个类的实例，（2）判断一个对象是否实现了某个接口。
+        if ( $view instanceof View ) {
+
+            // extract — 从数组中将变量导入到当前的符号表
+            // 例如 extract(['color'=>'blue','age'=>18,'gender'=>'man'])
+            // echo "$color, $age, $gender"
+
+            extract($view->data);
+
+            // 引用视图文件
+            return require $view->view;
+        }
+    }
+
+    /**
      * 当调用类中不存在的方法时，就会调用__call();  魔术方法
      * @param $method
      * @param $parameters
@@ -90,6 +184,6 @@ class View
             return $this->with(snake_case(substr($method, 4)), $parameters[0]);
         }
 
-        throw new BadMethodCallException("方法 [$method] 不存在！.");
+        throw new \BadMethodCallException("方法 [$method] 不存在！.");
     }
 }
