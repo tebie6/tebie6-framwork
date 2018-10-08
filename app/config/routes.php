@@ -6,8 +6,9 @@
  * Time: 下午3:55
  */
 
-use NoahBuscher\Macaw\Macaw;
-Macaw::get('/home/index','app\controllers\HomeController@home');
+use common\components\NoahBuscher\Macaw\Macaw;
+
+//Macaw::get('/home/index','app\controllers\HomeController@home');
 Macaw::get('', 'app\controllers\HomeController@home');
 //Macaw::get('/home/index','');
 //Macaw::map('',[]);
