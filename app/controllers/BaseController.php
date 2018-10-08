@@ -7,7 +7,7 @@
  */
 
 namespace app\controllers;
-use service\Controller;
+use services\Controller;
 
 class BaseController extends Controller
 {

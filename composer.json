@@ -3,12 +3,5 @@
     "noahbuscher/macaw": "dev-master",
     "illuminate/database": "*",
     "filp/whoops": "*"
-  },
-  "autoload":{
-    "classmap" : [
-      "app",
-      "app",
-      "services/"
-    ]
   }
 }

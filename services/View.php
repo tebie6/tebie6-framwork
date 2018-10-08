@@ -6,7 +6,7 @@
  * Time: 下午3:10
  */
 
-namespace service;
+namespace services;
 
 class View
 {

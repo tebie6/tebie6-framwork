@@ -5,9 +5,11 @@
  * Date: 2018/9/29
  * Time: 下午4:06
  */
-namespace service;
+namespace services;
 
 //基类
+use services\View;
+
 class Controller
 {
 

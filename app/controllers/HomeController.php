@@ -9,7 +9,6 @@
 namespace app\controllers;
 
 use app\models\BlogArticle;
-use app\controllers\BaseController;
 
 class HomeController extends BaseController
 {
