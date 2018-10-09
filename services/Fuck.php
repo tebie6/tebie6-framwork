@@ -5,38 +5,19 @@
  * Date: 2018/10/8
  * Time: 下午5:03
  */
+require __DIR__ . '/BaseFuck.php';
 
-class Fuck
+class Fuck extends \services\BaseFuck
 {
 
-    public static $classMap = [];
+}
 
+// 注册Fuck 自动加载类
+if(function_exists('spl_autoload_register')) {
 
-    /**
-     * 自动加载类库
-     * @param $className
-     */
-    public static function autoload($className){
+    spl_autoload_register(['Fuck','autoload'],true,true);
+} else {
 
-        // 判断是否已加载过
-        if(isset($className[$className])){
-
-            return ;
-
-        // 判断是否为应用下的文件
-        } elseif (strpos($className,'\\')) {
-
-            $classFile = BASE_PATH.'/'.str_replace('\\','/',$className).'.php';
-            if($classFile === false || !is_file($classFile)){
-
-                return ;
-            }
-        } else {
-
-            return ;
-        }
-
-        include $classFile;
-        self::$classMap[$className] = $className;
-    }
+    //TODO 稍后做兼容处理
+    die('PHP版本条件 (PHP 5 >= 5.1.0, PHP 7)');
 }

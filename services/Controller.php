@@ -37,4 +37,22 @@ class Controller
         // 渲染模版
         return View::renderPartial($viewName, $data);
     }
+
+    /**
+     * 返回JSON数据
+     * @param $code
+     * @param string $msg
+     * @param array $data
+     */
+    public function renderJson($code, $msg = '', array $data =[]){
+
+        $response = [
+            'error_code'    =>  intval($code),
+            'message'       =>  $msg,
+            'data'          =>  $data,
+        ];
+        header('Content-Type: application/json; charset=utf-8', true);
+
+        echo json_encode($response, JSON_FORCE_OBJECT);
+    }
 }
