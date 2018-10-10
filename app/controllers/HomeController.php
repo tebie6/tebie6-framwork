@@ -9,11 +9,12 @@
 namespace app\controllers;
 
 use app\models\BlogArticle;
+use services\Redis;
 
 class HomeController extends BaseController
 {
 
-    public function home(){
+    public function actionHome(){
 
         $data = [
             'article'   =>  BlogArticle::first(['title'])
@@ -22,8 +23,11 @@ class HomeController extends BaseController
         return $this->render('home',$data);
     }
 
-    public function index(){
+    public function actionIndex(){
 
+        Redis::set('test',123456);
+        echo Redis::get('test');
+        
         $data = [
             'article'   =>  BlogArticle::first(['title'])
         ];

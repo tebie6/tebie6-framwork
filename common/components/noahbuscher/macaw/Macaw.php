@@ -98,6 +98,11 @@ class Macaw
                         // Instanitate controller
                         $controller = new $segments[0]();
 
+                        //处理function 名称
+                        $segments[1] = explode('-',$segments[1]);
+                        array_walk($segments[1],function(&$v,$k){$v = ucwords($v);});
+                        $segments[1] = 'action'.implode('',$segments[1]);
+
                         // Call method
                         $response = $controller->{$segments[1]}();
                         if(is_string($response)){
@@ -133,10 +138,14 @@ class Macaw
             $segments = explode('/', $requestURI);
 
             $segments[0] = APP_NAME.'\controllers\\'.ucfirst($segments[0]).'Controller';
-//            echo "<pre>";
-//            print_r($segments);die;
             // Instanitate controller
             $controller = new $segments[0]();
+
+
+            //处理function 名称
+            $segments[1] = explode('-',$segments[1]);
+            array_walk($segments[1],function(&$v,$k){$v = ucwords($v);});
+            $segments[1] = 'action'.implode('',$segments[1]);
 
             // Call method
             $response = $controller->{$segments[1]}();
