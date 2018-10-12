@@ -14,6 +14,11 @@ use services\Redis;
 class HomeController extends BaseController
 {
 
+    public function __construct()
+    {
+        $this->layout = 'layout/main';
+    }
+
     public function actionHome(){
 
         $data = [
@@ -25,9 +30,9 @@ class HomeController extends BaseController
 
     public function actionIndex(){
 
-        Redis::set('test',123456);
-        echo Redis::get('test');
-        
+//        Redis::set('test',123456);
+//        echo Redis::get('test');
+
         $data = [
             'article'   =>  BlogArticle::first(['title'])
         ];

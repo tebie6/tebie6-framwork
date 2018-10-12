@@ -11,6 +11,9 @@ use Illuminate\Database\Capsule\Manager as Capsule;
 // 定义 BASE_PATH
 define('BASE_PATH', __DIR__);
 
+// 引入 utilty
+require BASE_PATH.'/common/utilty.php';
+
 // 引入Fuck 核心文件
 require BASE_PATH.'/services/Fuck.php';
 

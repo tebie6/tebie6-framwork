@@ -7,4 +7,8 @@
  */
 
 return [
+
+    'id'   =>  'app',
+    'runtimePath'   =>  '',
+    'layout'    =>  'layout/main'
 ];

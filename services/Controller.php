@@ -12,7 +12,21 @@ namespace services;
 class Controller
 {
 
-    protected $view;
+    /**
+     * @var null|string|false 设置layout 文件名
+     */
+    public $layout = false;
+
+    public $config;
+
+    public function __construct()
+    {
+
+        // 载入配置文件
+        $this->loadConfig();
+
+
+    }
 
     /**
      * 渲染视图 【渲染布局】
@@ -23,7 +37,7 @@ class Controller
     public function render($viewName, $data = []){
 
         // 渲染模版
-        return View::render($viewName, $data);
+        return View::render($viewName, $data, $this->layout);
     }
 
     /**
@@ -54,5 +68,20 @@ class Controller
         header('Content-Type: application/json; charset=utf-8', true);
 
         echo json_encode($response, JSON_FORCE_OBJECT);
+    }
+
+    /**
+     * 加载配置
+     */
+    private function loadConfig(){
+
+        $config = require dirname(__DIR__).'/'.APP_NAME.'/config/main.php';
+        $this->config = array_to_object($config);
+
+        echo "<pre>";
+        print_r($this->config);die;
+        if(isset($this->config->layout)){
+            echo 1;die;
+        }
     }
 }

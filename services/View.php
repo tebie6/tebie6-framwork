@@ -10,7 +10,7 @@ namespace services;
 
 class View
 {
-    const VIEW_BASE_PATH = '/app/views/';
+    const VIEW_BASE_PATH = '/' .APP_NAME. '/views/';
 
     public $view;
     public $data;
@@ -122,17 +122,22 @@ class View
      * 渲染视图 【渲染布局】
      * @param $viewName
      * @param array $data
+     * @param $layout
      * @return mixed
      */
-    public static function render($viewName, $data = []){
+    public static function render($viewName, $data = [], $layout){
 
         // 渲染模版
         $content = View::make($viewName)->setData($data);
         $output = View::renderPhpFile($content->view, $content->data);
 
         // 渲染layout
-        $content = View::make('layout/main')->setData(['content'=>$output]);
-        return View::renderPhpFile($content->view, $content->data);
+        if(!empty($layout)){
+            $content = View::make($layout)->setData(['content'=>$output]);
+            $output = View::renderPhpFile($content->view, $content->data);
+        }
+
+        return $output;
 
     }
 

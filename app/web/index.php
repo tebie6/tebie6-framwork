@@ -13,6 +13,5 @@ define('APP_NAME', 'app');
 // 启动器
 require APP_PATH.'/../../bootstrap.php';
 
-
 // 路由配置、开始处理
 require APP_PATH.'/../config/routes.php';
