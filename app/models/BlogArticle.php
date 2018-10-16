@@ -9,6 +9,10 @@ namespace app\models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Class BlogArticle
+ * @package app\models
+ */
 class BlogArticle extends Model
 {
 

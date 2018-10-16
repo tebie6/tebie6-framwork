@@ -11,6 +11,10 @@ namespace app\controllers;
 use app\models\BlogArticle;
 use services\Redis;
 
+/**
+ * Class HomeController
+ * @package app\controllers
+ */
 class HomeController extends BaseController
 {
 
@@ -20,11 +24,9 @@ class HomeController extends BaseController
     }
 
     public function actionHome(){
-
         $data = [
             'article'   =>  BlogArticle::first(['title'])
         ];
-
         return $this->render('home',$data);
     }
 

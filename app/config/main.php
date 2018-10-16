@@ -9,6 +9,14 @@
 return [
 
     'id'   =>  'app',
-    'runtimePath'   =>  '',
-    'layout'    =>  'layout/main'
+    'runtimePath'   =>  '/data/log',
+    'layout'    =>  'layout/main',
+    'log'   =>  [
+        'targets'  =>  [
+            [
+                'categories' => ['request'],
+                'logFile' => '@runtime/logs/request/'.date('Y').'/'.date('m').'/' . date('Y-m-d') . '.log',
+            ],
+        ]
+    ],
 ];
