@@ -27,6 +27,7 @@ class HomeController extends BaseController
         $data = [
             'article'   =>  BlogArticle::first(['title'])
         ];
+
         return $this->render('home',$data);
     }
 

@@ -7,11 +7,11 @@
  */
 
 // 定义 APP_PATH
-define('APP_PATH', __DIR__);
 define('APP_NAME', 'app');
+define('APP_PATH', dirname(__DIR__));
 
 // 启动器
-require APP_PATH.'/../../bootstrap.php';
+require_once APP_PATH.'/../bootstrap.php';
 
 // 路由配置、开始处理
-require APP_PATH.'/../config/routes.php';
+require_once APP_PATH.'/config/routes.php';

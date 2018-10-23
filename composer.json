@@ -2,6 +2,7 @@
   "require":{
     "illuminate/database": "*",
     "filp/whoops": "*",
-    "predis/predis": "^1.1"
+    "predis/predis": "^1.1",
+    "workerman/workerman": "^3.5"
   }
 }

@@ -9,13 +9,17 @@
 return [
 
     'id'   =>  'app',
-    'runtimePath'   =>  '/data/log',
+    'runtimePath'   =>  '/data/runtime',
     'layout'    =>  'layout/main',
     'log'   =>  [
         'targets'  =>  [
             [
-                'categories' => ['request'],
+                'categories' => 'request',
                 'logFile' => '@runtime/logs/request/'.date('Y').'/'.date('m').'/' . date('Y-m-d') . '.log',
+            ],
+            [
+                'categories' => 'error',
+                'logFile' => '@runtime/logs/error/'.date('Y').'/'.date('m').'/' . date('Y-m-d') . '.log',
             ],
         ]
     ],

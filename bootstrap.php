@@ -12,23 +12,24 @@ use Illuminate\Database\Capsule\Manager as Capsule;
 define('BASE_PATH', __DIR__);
 
 // 引入 异常处理类
-require BASE_PATH.'/services/Myexception.php';
+require_once BASE_PATH.'/services/Myexception.php';
 
 // 引入 utilty
-require BASE_PATH.'/common/utilty.php';
+require_once BASE_PATH.'/common/utilty.php';
 
 // 引入Fuck 核心文件
-require BASE_PATH.'/services/Fuck.php';
+require_once BASE_PATH.'/services/Fuck.php';
 
 // Autoload 自动载入
-require BASE_PATH.'/vendor/autoload.php';
+require_once BASE_PATH.'/vendor/autoload.php';
 
 // Eloquent ORM
 $capsule = new Capsule;
 
-$capsule->addConnection(require APP_PATH.'/../config/database.php');
+$capsule->addConnection(require_once APP_PATH.'/config/database.php');
 
 $capsule->bootEloquent();
+
 
 // 捕捉异常处理
 set_exception_handler(array("Myexception","exceptionHandler"));        //异常捕获自定义处理函数注册

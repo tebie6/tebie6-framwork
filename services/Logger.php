@@ -41,9 +41,54 @@ class Logger
      */
     protected $_messages = [];
 
-    public static function info($message, $category){
+    /**
+     * 获取log路径
+     * @param $category
+     * @return mixed
+     * @throws \Exception
+     */
+    public function getDirectory($category){
 
-//        $this->add();
+        // 获取应用配置文件
+        $config = require dirname(__DIR__).DIRECTORY_SEPARATOR.APP_NAME.DIRECTORY_SEPARATOR.'config/main.php';
+        if(!isset($config['runtimePath']) || empty($config['runtimePath'])){
+            $config['runtimePath'] = dirname(__DIR__).DIRECTORY_SEPARATOR.APP_NAME.DIRECTORY_SEPARATOR.'log/';
+        }
+
+        $logConfig = [];
+        if(isset($config['log']['targets']) && is_array($config['log']['targets'])){
+            foreach ($config['log']['targets'] as $_k=>$_v){
+                $logConfig[$_v['categories']] = $_v;
+            }
+        }
+
+
+        if(!isset($logConfig[$category])){
+            throw new \Exception("'{$category}' log config not found");
+        }
+
+        if(!isset($logConfig[$category]['logFile'])){
+            throw new \Exception("'{$category}' -> logFile params not found");
+        }
+
+        return str_replace('@runtime',$config['runtimePath'],$logConfig[$category]['logFile']);
+    }
+
+    public function info($message, $category){
+
+        $directory = $this->getDirectory($category);
+        $this->add($directory, LOG_INFO, var_export($message, true));
+    }
+
+    public function error($message, $category){
+
+        $directory = $this->getDirectory($category);
+        $message = [
+            '_server'   =>  $_SERVER,
+            'error_message' =>  $message,
+        ];
+
+        $this->add($directory, LOG_ERR, var_export($message, true));
     }
 
     /**

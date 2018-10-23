@@ -21,6 +21,8 @@ class Myexception extends Exception{
         $code 	= $e->getCode();
         $message= $e->getMessage();
 
+
+        $logger = new \services\Logger();
         // 获取应用配置文件
         $config = require dirname(__DIR__).DIRECTORY_SEPARATOR.APP_NAME.DIRECTORY_SEPARATOR.'config/main.php';
         if(!isset($config['runtimePath']) || empty($config['runtimePath'])){
@@ -31,7 +33,7 @@ class Myexception extends Exception{
             '_server'   =>  $_SERVER,
             'error_message' =>  $message,
         ];
-        (new \services\Logger())->add($config['runtimePath'].'/error', LOG_ERR, var_export($message, true),['file'=>$file,'line'=>$line]);
+        $logger->add($logger->getDirectory('error'), LOG_ERR, var_export($message, true),['file'=>$file,'line'=>$line]);
     }
     /**
      * @desc 	错误处理函数
