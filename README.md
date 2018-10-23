@@ -63,3 +63,13 @@ composer.json        composer配置
     请参考官方文档
     worker 服务编写位置  services/应用名/start_*.php
     执行 start.php 会自动执行 services/应用名/  下所有 start_*.php服务
+    
+    
+
+### 备注
+
+   1、框架核心代码目前比较混乱 后期将逐步优化
+   
+   2、PHP常驻内存运行方式 会存在内存溢出的问题 后期将逐步优化
+    
+    未完待续。。。
