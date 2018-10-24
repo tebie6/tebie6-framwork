@@ -29,9 +29,11 @@ common/              公共目录
 ---- utilty.php          工具
     
 services/            服务
+---- ted/                核心文件
 ---- app/                app应用所属服务
 -------- start.php           workerman 服务启动文件
 -------- start_web.php       webServer 常驻脚本
+
         
 bootstrap.php        启动器
 composer.json        composer配置
@@ -64,7 +66,14 @@ composer.json        composer配置
     worker 服务编写位置  services/应用名/start_*.php
     执行 start.php 会自动执行 services/应用名/  下所有 start_*.php服务
     
+### 5、参数获取
+
+    Fuck::$app->request->get();
+    或
+    Fuck::$app->request->post();
     
+    参数 1 获取的key name    function(key_name)
+    参数 2 默认值            function(key_name, default_value)
 
 ### 备注
 
