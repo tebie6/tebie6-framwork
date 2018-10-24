@@ -12,13 +12,13 @@ use Illuminate\Database\Capsule\Manager as Capsule;
 define('BASE_PATH', __DIR__);
 
 // 引入 异常处理类
-require_once BASE_PATH.'/services/Myexception.php';
+require_once BASE_PATH.'/services/ted/Myexception.php';
 
 // 引入 utilty
 require_once BASE_PATH.'/common/utilty.php';
 
 // 引入Fuck 核心文件
-require_once BASE_PATH.'/services/Fuck.php';
+require_once BASE_PATH.'/services/ted/Fuck.php';
 
 // Autoload 自动载入
 require_once BASE_PATH.'/vendor/autoload.php';

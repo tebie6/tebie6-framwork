@@ -7,7 +7,10 @@
  */
 require __DIR__ . '/BaseFuck.php';
 
-class Fuck extends \services\BaseFuck
+/**
+ * Class Fuck
+ */
+class Fuck extends \services\ted\BaseFuck
 {
 
 }

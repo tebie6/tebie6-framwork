@@ -6,7 +6,7 @@
  * Time: 下午10:55
  */
 
-namespace services;
+namespace services\ted;
 use Predis\Client;
 
 class Redis

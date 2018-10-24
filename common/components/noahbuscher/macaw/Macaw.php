@@ -29,7 +29,6 @@ class Macaw
      */
     public static function __callstatic($method, $params)
     {
-
         if ($method == 'map') {
             $maps = array_map('strtoupper', $params[0]);
             $uri = strpos($params[1], '/') === 0 ? $params[1] : '/' . $params[1];
@@ -120,6 +119,57 @@ class Macaw
             }
         } else {
 
+            // Check if defined with regex
+            $pos = 0;
+            foreach (self::$routes as $route) {
+                if (strpos($route, ':') !== false) {
+                    $route = str_replace($searches, $replaces, $route);
+                }
+
+                if (preg_match('#^' . $route . '$#', $uri, $matched)) {
+                    if (self::$methods[$pos] == $method || self::$methods[$pos] == 'ANY' || (!empty(self::$maps[$pos]) && in_array($method, self::$maps[$pos]))) {
+                        $found_route = true;
+
+                        // Remove $matched[0] as [1] is the first parameter.
+                        array_shift($matched);
+
+                        if (!is_object(self::$callbacks[$pos])) {
+
+                            // Grab all parts based on a / separator
+                            $parts = explode('/', self::$callbacks[$pos]);
+
+                            // Collect the last index of the array
+                            $last = end($parts);
+
+                            // Grab the controller name and method call
+                            $segments = explode('@', $last);
+
+                            // Instanitate controller
+                            $controller = new $segments[0]();
+
+                            //处理function 名称
+                            $segments[1] = explode('-',$segments[1]);
+                            array_walk($segments[1],function(&$v,$k){$v = ucwords($v);});
+                            $segments[1] = 'action'.implode('',$segments[1]);
+
+                            // Fix multi parameters
+                            if (!method_exists($controller, $segments[1])) {
+                                echo "controller and action not found";
+                            } else {
+                                echo call_user_func_array(array($controller, $segments[1]), $matched);
+                            }
+
+                            if (self::$halts) return;
+                        } else {
+                            echo call_user_func_array(self::$callbacks[$pos], $matched);
+
+                            if (self::$halts) return;
+                        }
+                    }
+                }
+                $pos++;
+            }
+
 
             //匹配路由 通过 "/"
             $requestURI = '';
@@ -156,54 +206,6 @@ class Macaw
             }
 
             if (self::$halts) return;
-
-
-
-            // Check if defined with regex
-            $pos = 0;
-            foreach (self::$routes as $route) {
-                if (strpos($route, ':') !== false) {
-                    $route = str_replace($searches, $replaces, $route);
-                }
-
-                if (preg_match('#^' . $route . '$#', $uri, $matched)) {
-                    if (self::$methods[$pos] == $method || self::$methods[$pos] == 'ANY' || (!empty(self::$maps[$pos]) && in_array($method, self::$maps[$pos]))) {
-                        $found_route = true;
-
-                        // Remove $matched[0] as [1] is the first parameter.
-                        array_shift($matched);
-
-                        if (!is_object(self::$callbacks[$pos])) {
-
-                            // Grab all parts based on a / separator
-                            $parts = explode('/', self::$callbacks[$pos]);
-
-                            // Collect the last index of the array
-                            $last = end($parts);
-
-                            // Grab the controller name and method call
-                            $segments = explode('@', $last);
-
-                            // Instanitate controller
-                            $controller = new $segments[0]();
-
-                            // Fix multi parameters
-                            if (!method_exists($controller, $segments[1])) {
-                                echo "controller and action not found";
-                            } else {
-                                call_user_func_array(array($controller, $segments[1]), $matched);
-                            }
-
-                            if (self::$halts) return;
-                        } else {
-                            call_user_func_array(self::$callbacks[$pos], $matched);
-
-                            if (self::$halts) return;
-                        }
-                    }
-                }
-                $pos++;
-            }
         }
 
         // Run the error callback if the route was not found

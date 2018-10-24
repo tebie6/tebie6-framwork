@@ -12,13 +12,12 @@ $errors = [];
 
 try{
 
-    // 路由配置、开始处理
-    require APP_PATH.'/config/routes.php';
-
+    (new \services\ted\Application())->run();
 //    echo "<br/>使用: ".memory_get_usage()."B<br/>";
 
 
 }catch(Exception $e){
+
     if($e instanceof \PDOException) {
         $errors = ['status'=>57777,'msg'=>'DB Process failed', 'data'=>[]];
     }else{
@@ -28,4 +27,4 @@ try{
     echo $exception;
 }
 
-(new \services\Logger())->error((isset($errors['status']) && $errors['status']>0),'error');
+(new \services\ted\Logger())->error((!empty($errors['msg']) ? $errors['msg'] : ''),'error');

@@ -6,7 +6,7 @@
  * Time: 下午3:29
  */
 
-namespace services;
+namespace services\ted;
 
 // Log 日志写入类
 class Logger
@@ -50,7 +50,7 @@ class Logger
     public function getDirectory($category){
 
         // 获取应用配置文件
-        $config = require dirname(__DIR__).DIRECTORY_SEPARATOR.APP_NAME.DIRECTORY_SEPARATOR.'config/main.php';
+        $config = require APP_PATH.DIRECTORY_SEPARATOR.'config/main.php';
         if(!isset($config['runtimePath']) || empty($config['runtimePath'])){
             $config['runtimePath'] = dirname(__DIR__).DIRECTORY_SEPARATOR.APP_NAME.DIRECTORY_SEPARATOR.'log/';
         }
@@ -124,54 +124,38 @@ class Logger
      * 将messages数组中的每一组日志信息存储到文件中，格式为/YYYY/MM/DD.php
      * example:2014/11/18.php 表示2014年11月18日的日志文件
      *
-     *     $writer->write($messages);
-     *
-     * @param   array   要保存的日志信息
-     * @return  void
+     * @param $directory
+     * @param array $messages
+     * @throws \Exception
      */
-    private function write($directory, array $messages) {
+    private function write($directory, array $messages)
+    {
+
+        $directory = pathinfo($directory);
+        $filename = $directory['dirname'] . DIRECTORY_SEPARATOR . $directory['basename'];
+        $directory = $directory['dirname'];
 
         // 检测目录
         if (!is_dir($directory) || !is_writable($directory)) {
-            try{
+            try {
                 mkdir($directory, 0777, true);
                 chmod($directory, 0755);
-            }catch(Exception $e){
-                throw new \Exception($e->getMessage(),$e->getFile() );
+            } catch (\Exception $e) {
+                throw new \Exception($e->getMessage(), $e->getFile());
             }
         }
 
-        // 将保存日志的目录路径放入对象环境中
-        $this->_directory = realpath($directory).DIRECTORY_SEPARATOR;
-
-        // “年”这一级目录
-        $directory = $this->_directory.date('Y');
-        if ( ! is_dir($directory)) {
-            // 如果“年”级目录不存在，创建
-            mkdir($directory, 02777);
-            // 设置目录权限(must be manually set to fix umask issues)
-            chmod($directory, 02777);
-        }
-        // “月”这一级目录
-        $directory .= DIRECTORY_SEPARATOR.date('m');
-        if ( ! is_dir($directory)) {
-            // 如果“月”级目录不存在，创建
-            mkdir($directory, 02777);
-            // 设置权限 (must be manually set to fix umask issues)
-            chmod($directory, 02777);
-        }
         // 要写入的文件
-        $filename = $directory.DIRECTORY_SEPARATOR.date('d').self::FILE_EXT;
-        if ( ! file_exists($filename)) {
+        if (!file_exists($filename)) {
             // 如果不存在日志文件，创建，并在记录日志开始写入安全验证程序
-            file_put_contents($filename, ''.PHP_EOL);
+            file_put_contents($filename, '' . PHP_EOL);
             // 设置文件权限为所有用户可读可写
             chmod($filename, 0666);
         }
         foreach ($messages as $message) {
             // 循环日志写信数组，写入每一条日志
-            file_put_contents($filename, PHP_EOL.PHP_EOL.PHP_EOL.$message['time'].' --- level:'.$message['level'].': '.PHP_EOL.$message['body'].PHP_EOL.'		[at file]:'.$message['file'].'		[at line]:'.$message['line'], FILE_APPEND);
+            file_put_contents($filename, PHP_EOL . PHP_EOL . PHP_EOL . $message['time'] . ' --- level:' . $message['level'] . ': ' . PHP_EOL . $message['body'] . PHP_EOL . '		[at file]:' . $message['file'] . '		[at line]:' . $message['line'], FILE_APPEND);
         }
-    }
 
+    }
 }

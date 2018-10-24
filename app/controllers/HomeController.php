@@ -9,7 +9,7 @@
 namespace app\controllers;
 
 use app\models\BlogArticle;
-use services\Redis;
+use services\ted\Redis;
 
 /**
  * Class HomeController

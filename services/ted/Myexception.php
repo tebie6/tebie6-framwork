@@ -22,12 +22,7 @@ class Myexception extends Exception{
         $message= $e->getMessage();
 
 
-        $logger = new \services\Logger();
-        // 获取应用配置文件
-        $config = require dirname(__DIR__).DIRECTORY_SEPARATOR.APP_NAME.DIRECTORY_SEPARATOR.'config/main.php';
-        if(!isset($config['runtimePath']) || empty($config['runtimePath'])){
-            $config['runtimePath'] = dirname(__DIR__).DIRECTORY_SEPARATOR.APP_NAME.DIRECTORY_SEPARATOR.'log/error/';
-        }
+        $logger = new \services\ted\Logger();
 
         $message = [
             '_server'   =>  $_SERVER,

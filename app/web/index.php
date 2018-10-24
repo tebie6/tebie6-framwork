@@ -13,5 +13,4 @@ define('APP_PATH', dirname(__DIR__));
 // 启动器
 require_once APP_PATH.'/../bootstrap.php';
 
-// 路由配置、开始处理
-require_once APP_PATH.'/config/routes.php';
+(new \services\ted\Application())->run();

@@ -5,7 +5,7 @@
  * Date: 2018/9/29
  * Time: 下午4:06
  */
-namespace services;
+namespace services\ted;
 
 //基类
 

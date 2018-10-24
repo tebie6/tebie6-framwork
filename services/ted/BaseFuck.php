@@ -5,12 +5,21 @@
  * Date: 2018/10/8
  * Time: 下午5:03
  */
-namespace services;
+namespace services\ted;
 
+/**
+ * Class BaseFuck
+ * @package services\ted
+ */
 class BaseFuck
 {
 
     public static $classMap = [];
+
+    /**
+     * @var \services\ted\Application the application instance
+     */
+    public static $app;
 
 
     /**
@@ -40,8 +49,6 @@ class BaseFuck
         include $classFile;
         self::$classMap[$className] = $className;
     }
-
-
 
 
 }

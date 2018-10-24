@@ -6,7 +6,7 @@
  * Time: 下午3:10
  */
 
-namespace services;
+namespace services\ted;
 
 class View
 {
