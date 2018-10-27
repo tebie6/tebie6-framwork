@@ -44,6 +44,6 @@ if(isset($GLOBALS['stay'])){
     $config = require_once APP_PATH . DIRECTORY_SEPARATOR . 'config' .DIRECTORY_SEPARATOR .'main.php';
 
     (new \services\ted\Application($config))->run();
-    
+
 }
 

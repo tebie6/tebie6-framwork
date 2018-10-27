@@ -18,10 +18,9 @@ app/                 应用 （支持多应用）
 ---- controllers/            控制器
 ---- models/                 模型
 ---- views/                  视图
--------- layout/                 布局
-        
+-------- layout/                 布局        
 ---- web/                    入口文件
----- stay/                   常驻内存入口
+
         
 common/              公共目录
 ---- components          公共组件
