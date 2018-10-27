@@ -13,7 +13,7 @@ class View
     const VIEW_BASE_PATH = '/' .APP_NAME. '/views/';
 
     public $view;
-    public $data;
+    public $data = [];
 
     public function __construct($view)
     {
@@ -133,7 +133,7 @@ class View
 
         // 渲染layout
         if(!empty($layout)){
-            $content = View::make($layout)->setData(['content'=>$output]);
+            $content = View::make($layout)->setData(['content'=>$output,'_view'=>$content->data]);
             $output = View::renderPhpFile($content->view, $content->data);
         }
 

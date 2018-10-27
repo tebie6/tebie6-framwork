@@ -16,6 +16,8 @@ if(!extension_loaded('posix')) {
     exit("Please install posix extension. See http://doc3.workerman.net/appendices/install-extension.html\n");
 }
 
+$GLOBALS['stay'] = true;
+
 // 标记是全局启动
 define('GLOBAL_START', 1);
 
@@ -25,6 +27,9 @@ define('APP_PATH', __DIR__.'/../../'.APP_NAME);
 
 // 启动器
 require_once dirname(__DIR__).'/../bootstrap.php';
+
+// 加载配置
+$GLOBALS['config'] = require_once APP_PATH . DIRECTORY_SEPARATOR . 'config' .DIRECTORY_SEPARATOR .'main.php';
 
 // 设置log路径
 Worker::$stdoutFile = __DIR__.'/stdout.log';

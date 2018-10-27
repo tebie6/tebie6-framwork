@@ -13,17 +13,30 @@ use Fuck;
  * Class Application
  * @property \services\ted\Request $request
  */
+
 class Application
 {
 
-    public function __construct()
+    /**
+     * 全局配置
+     * @var array
+     */
+    public $config;
+
+    public function __construct($config = [])
     {
         // 实例化核心组件
         foreach ( $this->coreComponents() as $_k=>$_v){
             $this->$_k = new $_v['class']();
         }
+
+        // 初始配置
+        $this->config = $config;
     }
 
+    /**
+     * 程序执行方法
+     */
     public function run(){
 
         Fuck::$app = $this;
@@ -34,6 +47,7 @@ class Application
 
 
     /**
+     * 核心组件
      * @inheritdoc
      */
     public function coreComponents()
