@@ -73,6 +73,19 @@ composer.json        composer配置
     
     参数 1 获取的key name    function(key_name)
     参数 2 默认值            function(key_name, default_value)
+    
+### 6、视图加载
+
+    渲染布局
+    $this->render($viewName, $data = []);
+    
+    不渲染布局
+    $this->renderPartial($viewName, $data = []);
+    
+    视图中块加载
+    $this->beginBlock(块名称);
+    $this->endBlock(块名称);
+    
 
 ### 备注
 
