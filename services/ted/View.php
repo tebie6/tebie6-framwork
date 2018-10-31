@@ -14,8 +14,10 @@ class View
 
     public $view;
     public $data = [];
+    public $_layout_data = [];
+    public $_block = [];
 
-    public function __construct($view)
+    public function __construct($view = null)
     {
         $this->view = $view;
     }
@@ -92,7 +94,7 @@ class View
      * @throws \Exception
      * @throws \Throwable
      */
-    private static function renderPhpFile($_file_, $_params_ = [])
+    private function renderPhpFile($_file_, $_params_ = [])
     {
         $_obInitialLevel_ = ob_get_level();
         ob_start();
@@ -125,16 +127,17 @@ class View
      * @param $layout
      * @return mixed
      */
-    public static function render($viewName, $data = [], $layout){
+    public function render($viewName, $data = [], $layout){
 
         // 渲染模版
         $content = View::make($viewName)->setData($data);
-        $output = View::renderPhpFile($content->view, $content->data);
+        $output = $this->renderPhpFile($content->view, $content->data);
 
         // 渲染layout
         if(!empty($layout)){
-            $content = View::make($layout)->setData(['content'=>$output,'_view'=>$content->data]);
-            $output = View::renderPhpFile($content->view, $content->data);
+            $this->_layout_data = $content->data;
+            $content = View::make($layout)->setData(['content'=>$output]);
+            $output = $this->renderPhpFile($content->view, $content->data);
         }
 
         return $output;
@@ -147,11 +150,11 @@ class View
      * @param array $data
      * @return mixed
      */
-    public static function renderPartial($viewName, $data = []){
+    public function renderPartial($viewName, $data = []){
 
         // 渲染模版
         $content = View::make($viewName)->setData($data);
-        return View::renderPhpFile($content->view, $content->data);
+        return $this->renderPhpFile($content->view, $content->data);
     }
 
     /**
@@ -174,6 +177,25 @@ class View
             // 引用视图文件
             return require $view->view;
         }
+    }
+
+    /**
+     * 获取指定区域块内容 【开始】
+     * @param $id
+     */
+    public function beginBlock($id)
+    {
+        ob_start();
+        ob_implicit_flush(false);
+    }
+
+    /**
+     * 获取指定区域块内容 【结束】
+     * @param $id
+     */
+    public function endBlock($id)
+    {
+        $this->_block[$id] = ob_get_clean();
     }
 
     /**

@@ -37,7 +37,8 @@ class Controller
     public function render($viewName, $data = []){
 
         // 渲染模版
-        return View::render($viewName, $data, $this->layout);
+        return (new View())->render($viewName, $data, $this->layout);
+//        return View::render($viewName, $data, $this->layout);
     }
 
     /**
@@ -49,7 +50,8 @@ class Controller
     public function renderPartial($viewName, $data = []){
 
         // 渲染模版
-        return View::renderPartial($viewName, $data);
+        return (new View())->renderPartial($viewName, $data);
+//        return View::renderPartial($viewName, $data);
     }
 
     /**
