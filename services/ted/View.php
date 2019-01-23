@@ -15,7 +15,10 @@ class View
     public $view;
     public $data = [];
     public $_layout_data = [];
-    public $_block = [];
+    public $_block = [
+        'css'    =>  '',
+        'js'     =>  '',
+    ];
 
     public function __construct($view = null)
     {
