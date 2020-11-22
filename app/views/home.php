@@ -33,7 +33,7 @@
 
 </div>
 
-<ul class="fuckme">
+<ul class="Fuckme">
 
     <li>Fuck Me !</li>
 

@@ -5,20 +5,20 @@
  * Date: 2018/10/8
  * Time: 下午5:03
  */
-require __DIR__ . '/BaseFuck.php';
+require __DIR__ . '/BaseTed.php';
 
 /**
- * Class Fuck
+ * Class Ted
  */
-class Fuck extends \services\ted\BaseFuck
+class Ted extends \services\ted\BaseTed
 {
 
 }
 
-// 注册Fuck 自动加载类
+// 注册Ted 自动加载类
 if(function_exists('spl_autoload_register')) {
 
-    spl_autoload_register(['Fuck','autoload'],true,true);
+    spl_autoload_register(['Ted','autoload'],true,true);
 } else {
 
     //TODO 稍后做兼容处理

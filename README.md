@@ -67,9 +67,9 @@ composer.json        composer配置
     
 ### 5、参数获取
 
-    Fuck::$app->request->get();
+    Ted::$app->request->get();
     或
-    Fuck::$app->request->post();
+    Ted::$app->request->post();
     
     参数 1 获取的key name    function(key_name)
     参数 2 默认值            function(key_name, default_value)

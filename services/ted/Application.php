@@ -7,7 +7,7 @@
  */
 
 namespace services\ted;
-use Fuck;
+use Ted;
 
 /**
  * Class Application
@@ -39,7 +39,7 @@ class Application
      */
     public function run(){
 
-        Fuck::$app = $this;
+        Ted::$app = $this;
 
         // 路由配置、开始处理
         require APP_PATH.'/config/routes.php';

@@ -8,10 +8,10 @@
 namespace services\ted;
 
 /**
- * Class BaseFuck
+ * Class BaseTed
  * @package services\ted
  */
-class BaseFuck
+class BaseTed
 {
 
     public static $classMap = [];
