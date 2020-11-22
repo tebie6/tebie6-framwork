@@ -1,7 +1,7 @@
 # tebie6-framwork
 
 
-Build a framework that belongs to Angela.
+Build a framework that belongs to Ted.
 
 选择 Laravel 的 illuminate/database 作为我们的 ORM 包
 
