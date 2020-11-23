@@ -7,6 +7,7 @@
  */
 
 
+// 是否为常驻判断
 if(isset($GLOBALS['stay'])){
 
     $GLOBALS['start_time'] = microtime(true);
@@ -37,10 +38,10 @@ if(isset($GLOBALS['stay'])){
     define('APP_NAME', 'app');
     define('APP_PATH', dirname(__DIR__));
 
-// 启动器
+    // 启动器
     require_once APP_PATH.'/../bootstrap.php';
 
-// 加载配置
+    // 加载配置
     $config = require_once APP_PATH . DIRECTORY_SEPARATOR . 'config' .DIRECTORY_SEPARATOR .'main.php';
 
     (new \services\ted\Application($config))->run();
