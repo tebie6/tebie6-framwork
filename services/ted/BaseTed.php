@@ -19,7 +19,8 @@ class BaseTed
     /**
      * @var \services\ted\Application the application instance
      */
-    public static $app;
+    public static $app = null;
+    public static $init = false;
 
 
     /**
@@ -46,7 +47,7 @@ class BaseTed
             return ;
         }
 
-        include $classFile;
+        require_once $classFile;
         self::$classMap[$className] = $className;
     }
 

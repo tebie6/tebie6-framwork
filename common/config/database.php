@@ -10,13 +10,13 @@ return [
 
     'driver'    => 'mysql',
 
-    'host'      => 'localhost',
+    'host'      => '192.168.11.11',
 
-    'database'  => 'blog',
+    'database'  => 'demo',
 
     'username'  => 'root',
 
-    'password'  => '',
+    'password'  => '123456!',
 
     'charset'   => 'utf8',
 

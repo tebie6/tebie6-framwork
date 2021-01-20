@@ -10,18 +10,19 @@ return [
 
     'driver'    => 'mysql',
 
-    'host'      => 'localhost',
+    'host'      => '192.168.1.82',
 
-    'database'  => 'blog',
+    'port'      => '3306',
+
+    'db_name'  => 'demo',
 
     'username'  => 'root',
 
-    'password'  => '',
+    'password'  => '123456',
 
     'charset'   => 'utf8',
 
     'collation' => 'utf8_general_ci',
 
-    'prefix'    => ''
-
+    'prefix'    => '',
 ];

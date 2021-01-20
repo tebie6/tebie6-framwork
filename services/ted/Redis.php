@@ -17,6 +17,13 @@ class Redis
     protected static $redis = null;
 
 
+    public static function getConnect(){
+
+        self::createConnect();
+
+        return self::$redis;
+    }
+
     /**
      * 创建 Redis连接
      * @return null|Client
@@ -25,11 +32,11 @@ class Redis
     public static function createConnect(){
 
         // Config 文件处理
-        $file_path = APP_PATH . '/../'.self::CONFIG_FILE;
+        $file_path = APP_PATH . '/'.self::CONFIG_FILE;
         if( !is_file($file_path) ){
             throw new \Exception('redis config file not exist.');
         }
-        $config = require $file_path;
+        $config = require_once $file_path;
 
         if( self::$redis === null ){
             // 实例 Redis

@@ -6,19 +6,14 @@
  * Time: 下午4:37
  */
 
-
-// 是否为常驻判断
 if(isset($GLOBALS['stay'])){
 
     $GLOBALS['start_time'] = microtime(true);
-
     $errors = [];
 
     try{
-
         (new \services\ted\Application($GLOBALS['config']))->run();
-//    echo "<br/>使用: ".memory_get_usage()."B<br/>";
-
+//        echo "<br/>使用: ".memory_get_usage()."B<br/>";
 
     }catch(Exception $e){
 
@@ -27,11 +22,13 @@ if(isset($GLOBALS['stay'])){
         }else{
             $errors = ['status'=>$e->getCode(),'msg'=>$e->getMessage(), 'data'=>[]];
         }
+
         $exception = json_encode($errors);
         echo $exception;
+
+        (new \services\ted\Logger())->error((!empty($errors['msg']) ? $errors['msg'] : ''),'error');
     }
 
-    (new \services\ted\Logger())->error((!empty($errors['msg']) ? $errors['msg'] : ''),'error');
 }else{
 
     // 定义 APP_PATH
@@ -45,6 +42,5 @@ if(isset($GLOBALS['stay'])){
     $config = require_once APP_PATH . DIRECTORY_SEPARATOR . 'config' .DIRECTORY_SEPARATOR .'main.php';
 
     (new \services\ted\Application($config))->run();
-
 }
 

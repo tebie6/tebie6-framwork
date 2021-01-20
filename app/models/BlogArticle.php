@@ -6,8 +6,7 @@
  * Time: 下午5:32
  */
 namespace app\models;
-
-use Illuminate\Database\Eloquent\Model;
+use services\ted\Db\Model;
 
 /**
  * Class BlogArticle
@@ -16,10 +15,11 @@ use Illuminate\Database\Eloquent\Model;
 class BlogArticle extends Model
 {
 
-    protected $table = 'blog_article';
+    public static $_tableName = 'blog_article';
 
-    public $timestamps = false;
+    public static function testSearch(){
 
-    public $primaryKey = 'id';
-
+        // 详情查看 common\components\workerman\mysql\Connection 类
+        return self::db()->from(self::$_tableName)->limit('id')->query();
+    }
 }

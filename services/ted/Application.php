@@ -7,6 +7,8 @@
  */
 
 namespace services\ted;
+use common\components\noahbuscher\macaw\Macaw;
+use services\ted\Db\DbPool;
 use Ted;
 
 /**
@@ -22,9 +24,14 @@ class Application
      * @var array
      */
     public $config;
+    public $db = null;
+    public $redis = null;
+    public $routes = null;
 
     public function __construct($config = [])
     {
+        if (Ted::$init != null) return;
+
         // 实例化核心组件
         foreach ( $this->coreComponents() as $_k=>$_v){
             $this->$_k = new $_v['class']();
@@ -32,6 +39,16 @@ class Application
 
         // 初始配置
         $this->config = $config;
+
+        // 初始化路由
+        $this->routes = new Macaw();
+
+        // 初始化db、redis
+        $this->db = DbPool::initDbConn();
+        $this->redis = Redis::getConnect();
+
+        // 加载常量
+        $this->params = require_once BASE_PATH . DIRECTORY_SEPARATOR . 'common' . DIRECTORY_SEPARATOR . 'config' .DIRECTORY_SEPARATOR .'params.php';
     }
 
     /**
@@ -39,7 +56,10 @@ class Application
      */
     public function run(){
 
-        Ted::$app = $this;
+        if (Ted::$init == null){
+            Ted::$app = $this;
+            Ted::$init = true;
+        }
 
         // 路由配置、开始处理
         require APP_PATH.'/config/routes.php';
@@ -56,13 +76,4 @@ class Application
             'request' => ['class' => 'services\ted\Request'],
         ];
     }
-
-//    public function __get($name)
-//    {
-//        // TODO: Implement __get() method.
-//
-//        $className = "services\\ted\\".ucfirst($name);
-//        return new $className();
-//
-//    }
 }

@@ -132,6 +132,7 @@ class View
      */
     public function render($viewName, $data = [], $layout){
 
+
         // 渲染模版
         $content = View::make($viewName)->setData($data);
         $output = $this->renderPhpFile($content->view, $content->data);

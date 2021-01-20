@@ -7,7 +7,7 @@
  */
 
 return [
-
+    'db'  =>  require_once APP_PATH.'/config/database.php',
     'id'   =>  'app',
     'runtimePath'   =>  '/data/runtime',
     'layout'    =>  'layout/main',

@@ -9,7 +9,9 @@
 namespace app\controllers;
 
 use app\models\BlogArticle;
+use services\ted\Application;
 use services\ted\Redis;
+use Ted;
 
 /**
  * Class HomeController
@@ -25,19 +27,23 @@ class HomeController extends BaseController
 
     public function actionHome(){
         $data = [
-            'article'   =>  BlogArticle::first(['title'])
+            'article'   =>  BlogArticle::testSearch()
         ];
 
+        $data['article'] = [
+            'title' => '标题',
+            'content' => 'content',
+        ];
         return $this->render('home',$data);
     }
 
     public function actionIndex(){
 
-//        Redis::set('test',123456);
-//        echo Redis::get('test');
+//        Ted::$app->redis->set('test',123456);
+//        echo Ted::$app->redis->::get('test');
 
         $data = [
-            'article'   =>  BlogArticle::first(['title'])
+            'article'   =>  BlogArticle::testSearch()
         ];
 
         return 'this is home/index';
