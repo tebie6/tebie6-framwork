@@ -1,6 +1,6 @@
 <?php
 
-use \Workerman\Worker;
+use common\components\workerman\Worker;
 
 // 检测运行环境
 if(strpos(strtolower(PHP_OS), 'win') === 0) {

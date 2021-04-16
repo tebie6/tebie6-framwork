@@ -6,19 +6,10 @@
  * Time: 下午3:55
  */
 
-use common\components\NoahBuscher\Macaw\Macaw;
+$routes = Ted::$app->routes;
+$routes::get('/', 'app\controllers\HomeController@home');
 
-//Macaw::get('/home/index','app\controllers\HomeController@home');
-Macaw::get('', 'app\controllers\HomeController@home');
-//Macaw::get('/home/index','');
-//Macaw::map('',[]);
+$routes::haltOnMatch();
+$routes::error('website\controllers\IndexController@404');
 
-Macaw::haltOnMatch();
-
-Macaw::$error_callback = function() {
-
-    throw new Exception("路由无匹配项 404 Not Found");
-
-};
-
-Macaw::dispatch();
+$routes::dispatch();

@@ -55,6 +55,4 @@ class Request
 
         throw new \Exception("Call to undefined method Request::{$name}() ");
     }
-
-
 }

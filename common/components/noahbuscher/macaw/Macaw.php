@@ -1,6 +1,6 @@
 <?php
 
-namespace common\components\NoahBuscher\Macaw;
+namespace common\components\noahbuscher\macaw;
 
 /**
  * @method static Macaw get(string $route, Callable $callback)
@@ -12,6 +12,7 @@ namespace common\components\NoahBuscher\Macaw;
  */
 class Macaw
 {
+
     public static $halts = false;
     public static $routes = array();
     public static $methods = array();
@@ -23,12 +24,16 @@ class Macaw
         ':all' => '.*'
     );
     public static $error_callback;
+    public static $controller = array();
+    public static $init = false;
 
     /**
      * Defines a route w/ callback and method
      */
     public static function __callstatic($method, $params)
     {
+        if (self::$init) return;
+
         if ($method == 'map') {
             $maps = array_map('strtoupper', $params[0]);
             $uri = strpos($params[1], '/') === 0 ? $params[1] : '/' . $params[1];
@@ -63,6 +68,9 @@ class Macaw
      */
     public static function dispatch()
     {
+        // 防止重复添加配置 消耗内存
+        self::$init = true;
+
         $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         $method = $_SERVER['REQUEST_METHOD'];
 
@@ -78,10 +86,13 @@ class Macaw
             $route_pos = array_keys(self::$routes, $uri);
             foreach ($route_pos as $route) {
 
+
                 // Using an ANY option to match both GET and POST requests
-                if (self::$methods[$route] == $method || self::$methods[$route] == 'ANY' || in_array($method, self::$maps[$route])) {
+                if (self::$methods[$route] == $method || self::$methods[$route] == 'ANY' || (is_array(self::$maps[$route]) && in_array($method, self::$maps[$route]))) {
                     $found_route = true;
 
+//                    echo "<pre>";
+//                    print_r(self::$callbacks);die;
                     // If route is not an object
                     if (!is_object(self::$callbacks[$route])) {
 
@@ -95,7 +106,11 @@ class Macaw
                         $segments = explode('@', $last);
 
                         // Instanitate controller
-                        $controller = new $segments[0]();
+                        if (isset(self::$controller[$segments[0]])){
+                            $controller = self::$controller[$segments[0]];
+                        } else {
+                            $controller = self::$controller[$segments[0]]=  new $segments[0]();
+                        }
 
                         //处理function 名称
                         $segments[1] = explode('-',$segments[1]);
@@ -127,6 +142,7 @@ class Macaw
                 }
 
                 if (preg_match('#^' . $route . '$#', $uri, $matched)) {
+
                     if (self::$methods[$pos] == $method || self::$methods[$pos] == 'ANY' || (!empty(self::$maps[$pos]) && in_array($method, self::$maps[$pos]))) {
                         $found_route = true;
 
@@ -145,7 +161,11 @@ class Macaw
                             $segments = explode('@', $last);
 
                             // Instanitate controller
-                            $controller = new $segments[0]();
+                            if (isset(self::$controller[$segments[0]])){
+                                $controller = self::$controller[$segments[0]];
+                            } else {
+                                $controller = self::$controller[$segments[0]]=  new $segments[0]();
+                            }
 
                             //处理function 名称
                             $segments[1] = explode('-',$segments[1]);
@@ -170,7 +190,6 @@ class Macaw
                 $pos++;
             }
 
-
             //匹配路由 通过 "/"
             $requestURI = '';
             if(isset($_SERVER['REQUEST_URI']) and trim($_SERVER['REQUEST_URI'])!='') {
@@ -186,30 +205,45 @@ class Macaw
             }
 
             $segments = explode('/', $requestURI);
-
             $segments[0] = APP_NAME.'\controllers\\'.ucfirst($segments[0]).'Controller';
             // Instanitate controller
-            $controller = new $segments[0]();
+            if (count($segments) == 2 && class_exists($segments[0])){
 
+                if (isset(self::$controller[$segments[0]])){
+                    $controller = self::$controller[$segments[0]];
+                } else {
+                    $controller = self::$controller[$segments[0]]=  new $segments[0]();
+                }
 
-            //处理function 名称
-            $segments[1] = explode('-',$segments[1]);
-            array_walk($segments[1],function(&$v,$k){$v = ucwords($v);});
-            $segments[1] = 'action'.implode('',$segments[1]);
+                //处理function 名称
+                $segments[1] = explode('-',$segments[1]);
+                array_walk($segments[1],function(&$v,$k){$v = ucwords($v);});
+                $segments[1] = 'action'.implode('',$segments[1]);
 
-            // Call method
-            $response = $controller->{$segments[1]}();
-            $found_route = true;
+                if (method_exists($controller, $segments[1])) {
+                    $response = $controller->{$segments[1]}();
 
-            if(is_string($response)){
-                echo $response;
+                    $found_route = true;
+
+                    if(is_string($response)){
+                        echo $response;
+                    }
+
+                    if (self::$halts) return;
+
+                } else {
+                    $found_route = false;
+                }
+
+            } else {
+                $found_route = false;
             }
 
-            if (self::$halts) return;
         }
 
         // Run the error callback if the route was not found
         if ($found_route == false) {
+
             if (!self::$error_callback) {
                 self::$error_callback = function () {
                     header($_SERVER['SERVER_PROTOCOL'] . " 404 Not Found");
@@ -217,6 +251,7 @@ class Macaw
                 };
             } else {
                 if (is_string(self::$error_callback)) {
+                    self::$init = false;
                     self::get($_SERVER['REQUEST_URI'], self::$error_callback);
                     self::$error_callback = null;
                     self::dispatch();

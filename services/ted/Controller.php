@@ -9,6 +9,8 @@ namespace services\ted;
 
 //基类
 
+use services\ted\Db\DbPool;
+
 class Controller
 {
 
@@ -16,16 +18,12 @@ class Controller
      * @var null|string|false 设置layout 文件名
      */
     public $layout = false;
-
     public $config;
 
     public function __construct()
     {
-
         // 载入配置文件
         $this->loadConfig();
-
-
     }
 
     /**
@@ -77,13 +75,7 @@ class Controller
      */
     private function loadConfig(){
 
-        $config = require dirname(__DIR__).'/'.APP_NAME.'/config/main.php';
+        $config = require_once dirname(__DIR__).'/../'.APP_NAME.'/config/main.php';
         $this->config = array_to_object($config);
-
-        echo "<pre>";
-        print_r($this->config);die;
-        if(isset($this->config->layout)){
-            echo 1;die;
-        }
     }
 }

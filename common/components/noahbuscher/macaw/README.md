@@ -18,7 +18,7 @@ require: {
 First, `use` the Macaw namespace:
 
 ```PHP
-use \NoahBuscher\Macaw\Macaw;
+use \noahbuscher\macaw\Macaw;
 ```
 
 Macaw is not an object, so you can just make direct operations to the class. Here's the Hello World:

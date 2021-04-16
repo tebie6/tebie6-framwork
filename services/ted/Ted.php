@@ -19,6 +19,7 @@ class Ted extends \services\ted\BaseTed
 if(function_exists('spl_autoload_register')) {
 
     spl_autoload_register(['Ted','autoload'],true,true);
+
 } else {
 
     //TODO 稍后做兼容处理
