@@ -90,6 +90,11 @@ Build a framework that belongs to Ted.
 ### 7、Redis
     
     Ted::$app->redis
+ 
+### 8、开发辅助
+    
+    sh ./services/fswatch.sh /需要监听的目录
+    例：sh ./services/fswatch.sh /project/tebie6-framework
    
 ### 性能
 
