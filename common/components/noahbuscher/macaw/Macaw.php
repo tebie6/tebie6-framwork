@@ -13,12 +13,12 @@ namespace common\components\noahbuscher\macaw;
 class Macaw
 {
 
-    public static $halts = false;
-    public static $routes = array();
-    public static $methods = array();
-    public static $callbacks = array();
+    public static $halts = false;       // 停止标识
+    public static $routes = array();    // 设置的伪静态路由规格
+    public static $methods = array();   // 路由规格的请求方式
+    public static $callbacks = array(); // 路由规格对应的回调
     public static $maps = array();
-    public static $patterns = array(
+    public static $patterns = array(    // 匹配正则
         ':any' => '[^/]+',
         ':num' => '[0-9]+',
         ':all' => '.*'
@@ -51,19 +51,32 @@ class Macaw
     }
 
     /**
-     * Defines callback if route is not found
+     * 没有匹配到方法的回调
      */
     public static function error($callback)
     {
         self::$error_callback = $callback;
     }
 
+    /**
+     * 暂停匹配
+     * @param bool $flag
+     */
     public static function haltOnMatch($flag = true)
     {
         self::$halts = $flag;
     }
 
     /**
+     * 记录日志
+     * @param string $text
+     */
+    public static function log($text = ''){
+        @file_put_contents("/logs/routes_error.log", "\n".$text."\n", FILE_APPEND);
+    }
+
+    /**
+     * 运行给定请求的回调
      * Runs the callback for the given request
      */
     public static function dispatch()
@@ -77,11 +90,14 @@ class Macaw
         $searches = array_keys(static::$patterns);
         $replaces = array_values(static::$patterns);
 
+        // 是否找到路由
         $found_route = false;
 
+        // 删除多余 / 符号
+        $uri = preg_replace('/\/+/', '/', $uri);
         self::$routes = preg_replace('/\/+/', '/', self::$routes);
 
-        // Check if route is defined without regex
+        // 检查请求路由是否在定义的路由列表中
         if (in_array($uri, self::$routes)) {
             $route_pos = array_keys(self::$routes, $uri);
             foreach ($route_pos as $route) {
@@ -132,35 +148,41 @@ class Macaw
                     }
                 }
             }
-        } else {
-
-            // Check if defined with regex
+        }
+        else
+        {
+            // 检查是否用正则表达式定义
             $pos = 0;
             foreach (self::$routes as $route) {
+
+                // 检查是否有需要匹配内容
                 if (strpos($route, ':') !== false) {
                     $route = str_replace($searches, $replaces, $route);
                 }
 
+                // 获取正则配的内容
                 if (preg_match('#^' . $route . '$#', $uri, $matched)) {
 
+                    // 遍历路由列表 self::$routes 判断是否有符合条件的路由
                     if (self::$methods[$pos] == $method || self::$methods[$pos] == 'ANY' || (!empty(self::$maps[$pos]) && in_array($method, self::$maps[$pos]))) {
                         $found_route = true;
 
-                        // Remove $matched[0] as [1] is the first parameter.
+                        // 删除 $matched[0] 因为 [1] 是第一个参数
                         array_shift($matched);
 
+                        // 判断回调内容是否为对象
                         if (!is_object(self::$callbacks[$pos])) {
 
-                            // Grab all parts based on a / separator
+                            // 根据 / 分割定义的回调内容
                             $parts = explode('/', self::$callbacks[$pos]);
 
-                            // Collect the last index of the array
+                            // 获取 $parts 最后一个索引内容
                             $last = end($parts);
 
-                            // Grab the controller name and method call
+                            // 获取控制器名称和调用方法
                             $segments = explode('@', $last);
 
-                            // Instanitate controller
+                            // 防止 controller 重复实例化
                             if (isset(self::$controller[$segments[0]])){
                                 $controller = self::$controller[$segments[0]];
                             } else {
@@ -172,10 +194,12 @@ class Macaw
                             array_walk($segments[1],function(&$v,$k){$v = ucwords($v);});
                             $segments[1] = 'action'.implode('',$segments[1]);
 
-                            // Fix multi parameters
+                            // 判断方法是否存在
                             if (!method_exists($controller, $segments[1])) {
+                                self::log("controller and action not found " . json_encode($segments));
                                 echo "controller and action not found";
                             } else {
+                                //  解决多参数
                                 echo call_user_func_array(array($controller, $segments[1]), $matched);
                             }
 
@@ -233,10 +257,12 @@ class Macaw
 
                 } else {
                     $found_route = false;
+                    self::log("method not exists" . json_encode($segments));
                 }
 
             } else {
                 $found_route = false;
+                self::log("class not exists" . json_encode($segments));
             }
 
         }
@@ -252,7 +278,7 @@ class Macaw
             } else {
                 if (is_string(self::$error_callback)) {
                     self::$init = false;
-                    self::get($_SERVER['REQUEST_URI'], self::$error_callback);
+                    self::get($uri, self::$error_callback);
                     self::$error_callback = null;
                     self::dispatch();
                     return;
