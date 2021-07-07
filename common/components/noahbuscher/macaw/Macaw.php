@@ -1,6 +1,7 @@
 <?php
 
 namespace common\components\noahbuscher\macaw;
+use common\components\workerman\Worker;
 
 /**
  * @method static Macaw get(string $route, Callable $callback)
@@ -12,7 +13,6 @@ namespace common\components\noahbuscher\macaw;
  */
 class Macaw
 {
-
     public static $halts = false;       // 停止标识
     public static $routes = array();    // 设置的伪静态路由规格
     public static $methods = array();   // 路由规格的请求方式
@@ -71,8 +71,9 @@ class Macaw
      * 记录日志
      * @param string $text
      */
-    public static function log($text = ''){
-        @file_put_contents("/logs/routes_error.log", "\n".$text."\n", FILE_APPEND);
+    public static function log($text = '')
+    {
+        @file_put_contents("/logs/routes_error.log", "\n" . $text . "\n", FILE_APPEND);
     }
 
     /**
@@ -122,20 +123,22 @@ class Macaw
                         $segments = explode('@', $last);
 
                         // Instanitate controller
-                        if (isset(self::$controller[$segments[0]])){
+                        if (isset(self::$controller[$segments[0]])) {
                             $controller = self::$controller[$segments[0]];
                         } else {
-                            $controller = self::$controller[$segments[0]]=  new $segments[0]();
+                            $controller = self::$controller[$segments[0]] = new $segments[0]();
                         }
 
                         //处理function 名称
-                        $segments[1] = explode('-',$segments[1]);
-                        array_walk($segments[1],function(&$v,$k){$v = ucwords($v);});
-                        $segments[1] = 'action'.implode('',$segments[1]);
+                        $segments[1] = explode('-', $segments[1]);
+                        array_walk($segments[1], function (&$v, $k) {
+                            $v = ucwords($v);
+                        });
+                        $segments[1] = 'action' . implode('', $segments[1]);
 
                         // Call method
                         $response = $controller->{$segments[1]}();
-                        if(is_string($response)){
+                        if (is_string($response)) {
                             echo $response;
                         }
 
@@ -148,9 +151,7 @@ class Macaw
                     }
                 }
             }
-        }
-        else
-        {
+        } else {
             // 检查是否用正则表达式定义
             $pos = 0;
             foreach (self::$routes as $route) {
@@ -183,16 +184,18 @@ class Macaw
                             $segments = explode('@', $last);
 
                             // 防止 controller 重复实例化
-                            if (isset(self::$controller[$segments[0]])){
+                            if (isset(self::$controller[$segments[0]])) {
                                 $controller = self::$controller[$segments[0]];
                             } else {
-                                $controller = self::$controller[$segments[0]]=  new $segments[0]();
+                                $controller = self::$controller[$segments[0]] = new $segments[0]();
                             }
 
                             //处理function 名称
-                            $segments[1] = explode('-',$segments[1]);
-                            array_walk($segments[1],function(&$v,$k){$v = ucwords($v);});
-                            $segments[1] = 'action'.implode('',$segments[1]);
+                            $segments[1] = explode('-', $segments[1]);
+                            array_walk($segments[1], function (&$v, $k) {
+                                $v = ucwords($v);
+                            });
+                            $segments[1] = 'action' . implode('', $segments[1]);
 
                             // 判断方法是否存在
                             if (!method_exists($controller, $segments[1])) {
@@ -216,40 +219,42 @@ class Macaw
 
             //匹配路由 通过 "/"
             $requestURI = '';
-            if(isset($_SERVER['REQUEST_URI']) and trim($_SERVER['REQUEST_URI'])!='') {
+            if (isset($_SERVER['REQUEST_URI']) and trim($_SERVER['REQUEST_URI']) != '') {
                 $requestURI = $_SERVER['REQUEST_URI'];
             }
 
-            if(isset($_SERVER['QUERY_STRING']) and trim($_SERVER['QUERY_STRING'])!='') {
+            if (isset($_SERVER['QUERY_STRING']) and trim($_SERVER['QUERY_STRING']) != '') {
                 $requestURI = substr($requestURI, 0, strpos($requestURI, '?'));
             }
 
-            if(isset($requestURI[0]) and $requestURI[0]=='/') {
+            if (isset($requestURI[0]) and $requestURI[0] == '/') {
                 $requestURI = substr($requestURI, 1);
             }
 
             $segments = explode('/', $requestURI);
-            $segments[0] = APP_NAME.'\controllers\\'.ucfirst($segments[0]).'Controller';
+            $segments[0] = APP_NAME . '\\controllers\\' . ucfirst($segments[0]) . 'Controller';
             // Instanitate controller
-            if (count($segments) == 2 && class_exists($segments[0])){
+            if (count($segments) == 2 && class_exists($segments[0])) {
 
-                if (isset(self::$controller[$segments[0]])){
+                if (isset(self::$controller[$segments[0]])) {
                     $controller = self::$controller[$segments[0]];
                 } else {
-                    $controller = self::$controller[$segments[0]]=  new $segments[0]();
+                    $controller = self::$controller[$segments[0]] = new $segments[0]();
                 }
 
                 //处理function 名称
-                $segments[1] = explode('-',$segments[1]);
-                array_walk($segments[1],function(&$v,$k){$v = ucwords($v);});
-                $segments[1] = 'action'.implode('',$segments[1]);
+                $segments[1] = explode('-', $segments[1]);
+                array_walk($segments[1], function (&$v, $k) {
+                    $v = ucwords($v);
+                });
+                $segments[1] = 'action' . implode('', $segments[1]);
 
                 if (method_exists($controller, $segments[1])) {
                     $response = $controller->{$segments[1]}();
 
                     $found_route = true;
 
-                    if(is_string($response)){
+                    if (is_string($response)) {
                         echo $response;
                     }
 
@@ -285,6 +290,53 @@ class Macaw
                 }
             }
             call_user_func(self::$error_callback);
+        }
+    }
+
+    /**
+     * console 识别路由
+     */
+    public static function console()
+    {
+        global $argv;
+
+        // $argv[1] controller  $argv[2] method
+        if (!isset($argv[1])) {
+            Worker::safeEcho("Please enter parameters" . PHP_EOL);
+            return;
+        }
+
+        $segments = explode("/", $argv[1]);
+        if (count($segments) != 2) {
+            Worker::safeEcho("Incorrect input parameter" . PHP_EOL);
+            return;
+        }
+
+        $segments[0] = APP_NAME . '\\controllers\\' . ucfirst($segments[0]) . 'Controller';
+        if (class_exists($segments[0])) {
+
+            $controller = new $segments[0]();
+
+            //处理function 名称
+            $segments[1] = explode('-', $segments[1]);
+            array_walk($segments[1], function (&$v, $k) {
+                $v = ucwords($v);
+            });
+            $segments[1] = 'action' . implode('', $segments[1]);
+
+            if (method_exists($controller, $segments[1])) {
+                $response = $controller->{$segments[1]}();
+
+                if (is_string($response)) {
+                    echo $response;
+                }
+
+            } else {
+                Worker::safeEcho("method not exists " . $segments[1] . PHP_EOL);
+            }
+
+        } else {
+            Worker::safeEcho("class not exists " . $segments[0] . PHP_EOL);
         }
     }
 }

@@ -101,6 +101,13 @@ Build a framework that belongs to Ted.
     sh ./services/fswatch.sh /需要监听的目录
     例：sh ./services/fswatch.sh /project/tebie6-framework
    
+### 10、Console
+   
+    在CLI模式下执行php脚本
+    
+    php ./console/ted test/index
+    php ./console/ted test/index-test
+   
 ### 性能
 
 测试环境：Workerman version:3.5.13
@@ -164,12 +171,6 @@ RPS能达到 950左右 内存没有明显的增加
      Summary	4M      -                   -            0           0         0       20000         0      [Summary]
 
 ### 备注
-
-   1、框架核心代码目前比较混乱 后期将逐步优化
-   
-   2、PHP常驻内存运行方式 内存管理后期将逐步优化
-   
-   3、mysql连接池 后期将逐步优化
    
     未完待续。。。
 

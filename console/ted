@@ -1,0 +1,21 @@
+#!/usr/bin/env php
+<?php
+/**
+ * Created by PhpStorm.
+ * User: liumingyu
+ * Date: 2021/7/7
+ * Time: 4:42 PM
+ */
+
+// 定义 APP_PATH
+define('APP_NAME', 'console');
+define('APP_PATH', __DIR__);
+
+// 启动器
+require_once APP_PATH.'/../bootstrap.php';
+
+// 加载配置
+$config = require_once APP_PATH . DIRECTORY_SEPARATOR . 'config' .DIRECTORY_SEPARATOR .'main.php';
+
+(new \services\ted\Application($config))->run();
+
